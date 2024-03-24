@@ -1,25 +1,31 @@
 #include <Arduino.h>
-#include <Poti.h>
+#include <Mux.h>
+#include <MuxedPoti.h>
 // #include <MIDI.h>
 
 // Functions
-void checkAndSendMIDICC(Poti &poti);
+void checkAndSendMIDICC(MuxedPoti &poti);
+// void checkAndSendMIDICC(Poti &poti);
 void checkAndSendMIDICC();
 
 // MIDI
 // MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, MIDI);
 
 // Define periferials
-// Faders and potis
-Poti FADER1(36, 10, 1); // default threshold value of 10
-Poti FADER2(39, 10, 2);
-Poti FADER3(34, 10, 3);
-Poti FADER4(35, 10, 4);
-Poti POTI1(32, 11, 1);
-Poti POTI2(33, 11, 2);
-Poti POTI3(25, 11, 3);
-Poti POTI4(26, 11, 4);
+// Muxes
+Mux mux(35, 26, 33, 32, true, false);
 
+// Muxed Potis
+MuxedPoti FADER1(mux, 7, 10, 1);
+MuxedPoti FADER2(mux, 6, 10, 2);
+MuxedPoti FADER3(mux, 5, 10, 3);
+MuxedPoti FADER4(mux, 4, 10, 4);
+MuxedPoti POTI1(mux, 3, 11, 1);
+MuxedPoti POTI2(mux, 2, 11, 2);
+MuxedPoti POTI3(mux, 1, 11, 3);
+MuxedPoti POTI4(mux, 0, 11, 4);
+
+/*
 // // Rotary Encoders
 const int RE1_pinA = 27; // Interrupt
 const int RE1_pinB = 4;	 // Data
@@ -55,30 +61,43 @@ void RE1pinA_updateCC()
 	}
 	lastInterruptTime = currentTime;
 }
+*/
 
 void setup()
 {
 	// MIDI.begin(MIDI_CHANNEL_OMNI);
 	Serial.begin(9600);
 
-	pinMode(RE1_pinA, INPUT_PULLDOWN);
-
-	pinMode(RE1_pinB, INPUT_PULLDOWN);
+	// pinMode(RE1_pinA, INPUT_PULLDOWN);
+	// pinMode(RE1_pinB, INPUT_PULLDOWN);
 
 	// attachInterrupt(digitalPinToInterrupt(RE1_pinA), RE1pinA_updateCC, RISING);
+	FADER1.printMuxLocation();
+	FADER2.printMuxLocation();
+	FADER3.printMuxLocation();
+	FADER4.printMuxLocation();
+	POTI1.printMuxLocation();
+	POTI2.printMuxLocation();
+	POTI3.printMuxLocation();
+	POTI4.printMuxLocation();
+	Serial.println(mux.getActiveChannel());
+	Serial.println(mux.getDataPin());
+	Serial.println(mux.getS0());
+	Serial.println(mux.getS1());
+	Serial.println(mux.getS2());
 }
 
 void loop()
 {
 	// FADERS AND POTIS
-	checkAndSendMIDICC(FADER1, 7);
-	checkAndSendMIDICC(FADER2, 6);
-	checkAndSendMIDICC(FADER3, 5);
-	checkAndSendMIDICC(FADER4, 4);
-	checkAndSendMIDICC(POTI1, 3);
-	checkAndSendMIDICC(POTI2, 2);
-	checkAndSendMIDICC(POTI3, 1);
-	checkAndSendMIDICC(POTI4, 0);
+	checkAndSendMIDICC(FADER1);
+	checkAndSendMIDICC(FADER2);
+	checkAndSendMIDICC(FADER3);
+	checkAndSendMIDICC(FADER4);
+	checkAndSendMIDICC(POTI1);
+	checkAndSendMIDICC(POTI2);
+	checkAndSendMIDICC(POTI3);
+	checkAndSendMIDICC(POTI4);
 	// checkAndSendMIDICC();
 	// Serial.println(digitalRead(RE1_pinB));
 	// delay(40);
@@ -96,17 +115,26 @@ void loop()
 	// }
 }
 
-void checkAndSendMIDICC(Poti &poti, int muxChannel_y)
+// void checkAndSendMIDICC(Poti &poti)
+// {
+// 	if (poti.hasSignificantChange())
+// 	{
+// 		// MIDI.sendControlChange(poti.getControllNumber(), poti.getCurrentCCMessage(), poti.getMidiChannel()); // Sending on channel 1
+// 		Serial.print(poti.getControllNumber());
+// 		Serial.print(" : ");
+// 		// if ((&poti == &POTI1) || (&poti == &POTI2) || (&poti == &POTI3) || (&poti == &POTI4))
+// 		// {
+// 		//   Serial.print(map(poti.getCurrentCCMessage(), 0, 127, 127, 0));
+// 		// }
+// 		// else
+// 		Serial.print(poti.getCurrentCCMessage());
+// 		Serial.print(" : ");
+// 		Serial.println(poti.getMidiChannel());
+// 	}
+// }
+
+void checkAndSendMIDICC(MuxedPoti &poti)
 {
-	switch (muxChannel_y)
-	{
-	case 0:
-		digitalWrite()
-		break;
-	
-	default:
-		break;
-	}
 	if (poti.hasSignificantChange())
 	{
 		// MIDI.sendControlChange(poti.getControllNumber(), poti.getCurrentCCMessage(), poti.getMidiChannel()); // Sending on channel 1
@@ -123,10 +151,10 @@ void checkAndSendMIDICC(Poti &poti, int muxChannel_y)
 	}
 }
 
-void checkAndSendMIDICC()
-{
-	if (RE1_counter != RE1_counterLast)
-	{
-		Serial.println("RE1: " + RE1_counter);
-	}
-}
+// void checkAndSendMIDICC()
+// {
+// 	if (RE1_counter != RE1_counterLast)
+// 	{
+// 		Serial.println("RE1: " + RE1_counter);
+// 	}
+// }
