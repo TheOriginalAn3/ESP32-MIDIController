@@ -29,13 +29,9 @@ MuxedPoti POTI4(mux, 0, 11, 4);
 
 // Encoders
 ESP32Encoder ENC1;
-int ENC1_LastValue = 0;
 ESP32Encoder ENC2;
-int ENC2_LastValue = 0;
 ESP32Encoder ENC3;
-int ENC3_LastValue = 0;
 ESP32Encoder ENC4;
-int ENC4_LastValue = 0;
 
 void setup()
 {
@@ -56,8 +52,17 @@ void setup()
 	// Serial.println(mux.getS1());
 	// Serial.println(mux.getS2());
 
-	ENC4.attachHalfQuad(4, 27);
-	ENC3.attachHalfQuad(0, 14);
+	ENC1.attachHalfQuad(15, 27);
+	ENC1.setMIDIParam(12, 1);
+	ENC2.attachHalfQuad(2, 14);
+	ENC2.setMIDIParam(12, 2);
+	ENC3.attachHalfQuad(0, 12); 
+	ENC3.setMIDIParam(12, 3);
+	ENC4.attachHalfQuad(4, 13);                                                                                                                                                                                                    
+	ENC4.setMIDIParam(12, 4);
+
+
+
 	// ENC1.attachHalfQuad(15, 27);
 	// // ENC1.setMIDIParam(12, 1);
 	// ENC2.attachHalfQuad(2, 14);
@@ -79,9 +84,10 @@ void loop()
 	checkAndSendMIDICC(POTI2);
 	checkAndSendMIDICC(POTI3);
 	checkAndSendMIDICC(POTI4);
-	// checkAndSendMIDICC(ENC1);
-	// checkAndSendMIDICC(ENC2);
-	// checkAndSendMIDICC(ENC3);
+	// ENCODERS
+	checkAndSendMIDICC(ENC1);
+	checkAndSendMIDICC(ENC2);
+	checkAndSendMIDICC(ENC3);
 	checkAndSendMIDICC(ENC4);
 }
 
@@ -118,92 +124,13 @@ void checkAndSendMIDICC(MuxedPoti &poti)
 
 void checkAndSendMIDICC(ESP32Encoder &enc)
 {
-	int currentCount = enc.getCount() / 2;
-	if (&enc == &ENC4)
+	if (enc.getLastValue() != enc.getCount()/2)
 	{
-		if (ENC4_LastValue != currentCount)
-		{
-			if (currentCount < 0)
-			{
-				currentCount = 127;
-				enc.setCount(254);
-			}
-			else if (currentCount > 127)
-			{
-				currentCount = 0;
-				enc.setCount(0);
-			}
-			ENC4_LastValue = currentCount;
-			Serial.println(currentCount);
-		}
-	}
-	else if (&enc == &ENC3)
-	{
-		if (ENC3_LastValue != currentCount)
-		{
-			if (currentCount < 0)
-			{
-				currentCount = 127;
-				enc.setCount(254);
-			}
-			else if (currentCount > 127)
-			{
-				currentCount = 0;
-				enc.setCount(0);
-			}
-			ENC3_LastValue = currentCount;
-			Serial.println(currentCount);
-		}
-	}
-	else if (&enc == &ENC2)
-	{
-		if (ENC2_LastValue != currentCount)
-		{
-			if (currentCount < 0)
-			{
-				currentCount = 127;
-				enc.setCount(254);
-			}
-			else if (currentCount > 127)
-			{
-				currentCount = 0;
-				enc.setCount(0);
-			}
-			ENC2_LastValue = currentCount;
-			Serial.println(currentCount);
-		}
-	}
-	else if (&enc == &ENC1)
-	{
-		if (ENC1_LastValue != currentCount)
-		{
-			if (currentCount < 0)
-			{
-				currentCount = 127;
-				enc.setCount(254);
-			}
-			else if (currentCount > 127)
-			{
-				currentCount = 0;
-				enc.setCount(0);
-			}
-			ENC1_LastValue = currentCount;
-			Serial.println(currentCount);
-		}
+		// MIDI.sendControlChange(poti.getControlNumber(), poti.getCurrentCCMessage(), poti.getMidiChannel()); // Sending on channel 1
+		Serial.print(enc.getControlNumber());
+		Serial.print(" : ");
+		Serial.print(enc.getCurrentCCMessage());
+		Serial.print(" : ");
+		Serial.println(enc.getMidiChannel());
 	}
 }
-
-// void checkAndSendMIDICC(ESP32Encoder &enc)
-// {
-// 	int currentCCMessage = enc.getCurrentCCMessage();
-// 	if (currentCCMessage != enc.getPrevCCMessage())
-// 	{
-// 		// MIDI.sendControlChange(poti.getControlNumber(), poti.getCurrentCCMessage(), poti.getMidiChannel()); // Sending on channel 1
-// 		Serial.print(enc.getControlNumber());
-// 		Serial.print(" : ");
-// 		Serial.print(enc.getCurrentCCMessage());
-// 		Serial.print(" : ");
-// 		Serial.println(enc.getMidiChannel());
-// 		enc.setPrevCCMessage(currentCCMessage);
-// 	}
-// }
