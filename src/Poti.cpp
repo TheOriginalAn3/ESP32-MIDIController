@@ -50,7 +50,7 @@ int Poti::getCurrentCCMessage()
     return currentCCMessage;
 }
 
-byte Poti::getControllNumber()
+byte Poti::getControlNumber()
 {
     return controlNumber;
 }

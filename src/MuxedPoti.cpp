@@ -52,7 +52,7 @@ int MuxedPoti::getCurrentCCMessage()
     return currentCCMessage;
 }
 
-byte MuxedPoti::getControllNumber()
+byte MuxedPoti::getControlNumber()
 {
     return controlNumber;
 }

@@ -35,7 +35,7 @@ public:
     MuxedPoti(Mux &mux, int muxYChannel, int controlNumber, byte midiChannel, int absValueThreshold);
     bool hasSignificantChange();
     int getCurrentCCMessage();
-    byte getControllNumber();
+    byte getControlNumber();
     byte getMidiChannel();
     byte getCurrentVal();
     int getAbsValue();
