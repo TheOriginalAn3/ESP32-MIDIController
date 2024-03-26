@@ -3,12 +3,17 @@
 #include <Mux.h>
 #include <MuxedPoti.h>
 #include <ESP32Encoder.h>
+#include <TFT_eSPI.h> // Hardware-specific library
+#include <SPI.h>
 // #include <MIDI.h>
 
 // Functions
 void checkAndSendMIDICC(MuxedPoti &poti);
 void checkAndSendMIDICC(Poti &poti);
 void checkAndSendMIDICC(ESP32Encoder &enc);
+void tftPrintTest();
+void tftUpdateValueTest();
+
 
 // MIDI
 // MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, MIDI);
@@ -32,6 +37,9 @@ ESP32Encoder ENC1;
 ESP32Encoder ENC2;
 ESP32Encoder ENC3;
 ESP32Encoder ENC4;
+
+// TFT Display
+TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
 
 void setup()
 {
@@ -62,15 +70,11 @@ void setup()
 	ENC4.setMIDIParam(12, 4);
 
 
-
-	// ENC1.attachHalfQuad(15, 27);
-	// // ENC1.setMIDIParam(12, 1);
-	// ENC2.attachHalfQuad(2, 14);
-	// // ENC2.setMIDIParam(12, 2);
-	// ENC3.attachHalfQuad(0, 12);
-	// // ENC3.setMIDIParam(12, 3);
-	// ENC4.attachHalfQuad(4, 13);
-	// // ENC4.setMIDIParam(12, 4);
+  // Use this initializer if you're using a 1.8" TFT
+  tft.init();   // initialize a ST7735S chip
+  Serial.println("Initialized Display");
+  tftPrintTest();
+  Serial.println("done");
 }
 
 void loop()
@@ -89,6 +93,8 @@ void loop()
 	checkAndSendMIDICC(ENC2);
 	checkAndSendMIDICC(ENC3);
 	checkAndSendMIDICC(ENC4);
+
+	tftUpdateValueTest();
 }
 
 void checkAndSendMIDICC(Poti &poti)
@@ -132,5 +138,28 @@ void checkAndSendMIDICC(ESP32Encoder &enc)
 		Serial.print(enc.getCurrentCCMessage());
 		Serial.print(" : ");
 		Serial.println(enc.getMidiChannel());
+	}
+}
+
+void tftPrintTest() {
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.println("Hello");
+
+  tft.setCursor(0, 30);
+  tft.println("World!");
+}
+
+void tftUpdateValueTest() {
+	tftPrintTest();
+	for (int i = 0; i < 127; i++)
+	{	
+		tft.setCursor(0, 60);
+		tft.fillRect(0, 60, 128, 30, TFT_BLACK);
+		tft.setCursor(0, 60);
+		tft.println(i);
+		delay(100);
 	}
 }
