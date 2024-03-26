@@ -94,7 +94,7 @@ void loop()
 	checkAndSendMIDICC(ENC3);
 	checkAndSendMIDICC(ENC4);
 
-	tftUpdateValueTest();
+	// tftUpdateValueTest();
 }
 
 void checkAndSendMIDICC(Poti &poti)
