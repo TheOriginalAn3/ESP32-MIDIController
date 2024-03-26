@@ -34,7 +34,7 @@ bool Poti::hasSignificantChange()
     int averageVal = total / 10;
 
     // Map the average value
-    currentCCMessage = map(averageVal, 0, 65535, 0, 127);
+    currentCCMessage = map(averageVal, 0, 4095, 0, 127);
 
     if (abs(averageVal - previousAverage) > absValueThreshold && currentCCMessage != previousVal)
     {
