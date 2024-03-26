@@ -1,4 +1,3 @@
-#if 1
 #include <Arduino.h>
 #include <Poti.h>
 #include <Mux.h>
@@ -46,7 +45,6 @@ void setup()
 {
 	// MIDI.begin(MIDI_CHANNEL_OMNI);
 	Serial.begin(9600);
-	analogReadResolution(16);
 
 	FADER1.printMuxLocation();
 	FADER2.printMuxLocation();
@@ -106,7 +104,7 @@ void checkAndSendMIDICC(Poti &poti)
 		// MIDI.sendControlChange(poti.getControlNumber(), poti.getCurrentCCMessage(), poti.getMidiChannel()); // Sending on channel 1
 		Serial.print(poti.getControlNumber());
 		Serial.print(" : ");
-		// if ((&poti == &POTI1) || (&poti == &POTI2) || (&poti == &POTI3) || (&poti == &POTI4))
+		// if ((&poti == &POTI1) || (&poti == &POTI2) || (&poti == &POTI3) || (&poti == &POTI4))e
 		// {
 		//   Serial.print(map(poti.getCurrentCCMessage(), 0, 127, 127, 0));
 		// }
@@ -165,4 +163,3 @@ void tftUpdateValueTest() {
 		delay(100);
 	}
 }
-#endif
