@@ -1,3 +1,4 @@
+#if 1
 #include <Arduino.h>
 #include <Poti.h>
 #include <Mux.h>
@@ -45,6 +46,7 @@ void setup()
 {
 	// MIDI.begin(MIDI_CHANNEL_OMNI);
 	Serial.begin(9600);
+	analogReadResolution(16);
 
 	FADER1.printMuxLocation();
 	FADER2.printMuxLocation();
@@ -163,3 +165,4 @@ void tftUpdateValueTest() {
 		delay(100);
 	}
 }
+#endif
